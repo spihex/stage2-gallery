@@ -1,5 +1,5 @@
 // ALBUM LOAD & NAVIGATE
-let galleryItemsContainer = document.querySelector('.gallery__items');
+let albumItemsContainer = document.querySelector('.gallery__items');
 let galleryTitle = document.querySelector('.gallery__title');
 
 let photos;
@@ -8,7 +8,8 @@ let albumStartLoadingOffset = 10;
 let galleryItemsToLoad = 10;
 
 let albumButtonLoadMore = document.querySelector('.button__load-more');
-let galleryNavButtons = document.querySelectorAll('.gallery__nav-button');
+let albumButtonNext = document.querySelector('.button__next');
+let albumButtonPrev = document.querySelector('.button__prev');
 
 document.addEventListener("DOMContentLoaded", function () {
     getPhotosByAlbumID(currentAlbumID);
@@ -22,51 +23,38 @@ albumButtonLoadMore.addEventListener("click", function (e) {
     albumStartLoadingOffset *= 2;
 });
 
+albumButtonNext.addEventListener("click", function (e) {
+    e.preventDefault();
 
-galleryNavButtons.forEach(button => {
-    button.addEventListener('click', e => {
-        e.preventDefault();
-        if (e.target.classList.contains('button__next')) {
-            currentAlbumID++
-        } else {
-            currentAlbumID--
-        }
-        getPhotosByAlbumID(currentAlbumID);
-    })
-})
+    currentAlbumID++;
+
+    getPhotosByAlbumID(currentAlbumID);
+});
+
+albumButtonPrev.addEventListener("click", function (e) {
+    e.preventDefault();
+    if ((currentAlbumID - 1) < 1) {
+        return;
+    } else {
+        currentAlbumID--;
+    }
+    getPhotosByAlbumID(currentAlbumID);
+});
 
 
 function getPhotosByAlbumID(ID) {
     fetch('https://jsonplaceholder.typicode.com/photos?albumId=' + ID)
-        .then(response => {
-
-            if (response.ok) {
-                return response.json();
-            } else {
-                throw new Error('С запросом что-то не так');
-            }
-
-        })
+        .then(response => response.json())
         .then(albumJSON => {
-
             if (albumJSON.length > 0) {
-
                 photos = albumJSON;
-                galleryItemsContainer.innerHTML = '';
+                albumItemsContainer.innerHTML = '';
                 albumStartLoadingOffset = 10;
 
                 changeGalleryTitleByAlbumID(`Заголовок альбома №${ID}: `, ID);
                 addAlbumItemToGallery(photos, 0, galleryItemsToLoad);
-
-            } else {
-                currentAlbumID = 1;
-                throw new Error('Альбом не найден');
             }
-
         })
-        .catch((error) => {
-            alert(error);
-        });
 }
 
 function addAlbumItemToGallery(photos, startAtPos, endAtPos) {
@@ -79,7 +67,7 @@ function addAlbumItemToGallery(photos, startAtPos, endAtPos) {
             <img class="gallery__item-image" data-full-size="${photos[i].url}" src="${photos[i].thumbnailUrl}" >
         </div>
          `;
-            galleryItemsContainer.innerHTML += HTMLtemplate;
+            albumItemsContainer.innerHTML += HTMLtemplate;
         }
     }
 }
@@ -87,8 +75,8 @@ function addAlbumItemToGallery(photos, startAtPos, endAtPos) {
 function changeGalleryTitleByAlbumID(str, albumID) {
     fetch('https://jsonplaceholder.typicode.com/albums?id=' + albumID)
         .then(response => response.json())
-        .then(album => {
-            galleryTitle.innerHTML = str + album[0].title;
+        .then(photos => {
+            galleryTitle.innerHTML = str + photos[0].title;
         })
 }
 
@@ -103,7 +91,7 @@ lightbox.addEventListener('click', e => {
     lightbox.classList.remove('active')
 })
 
-galleryItemsContainer.addEventListener('click', e => {
+albumItemsContainer.addEventListener('click', e => {
     if (e.target.classList.contains('gallery__item-image')) {
         lightbox.classList.add('active')
         let img = document.createElement('img')

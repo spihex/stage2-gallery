@@ -91,7 +91,7 @@
 
  /* ALBUM LIGHTBOX */
 
- .lightbox {
+ #lightbox {
      position: fixed;
      z-index: 1000;
      top: 0;
@@ -101,13 +101,13 @@
      display: none;
  }
 
- .lightbox.active {
+ #lightbox.active {
      display: flex;
      justify-content: center;
      align-items: center;
  }
 
- .lightbox img {
+ #lightbox img {
      max-width: 80vw;
      max-height: 80vh;
  }

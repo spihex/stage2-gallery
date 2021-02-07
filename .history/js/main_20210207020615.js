@@ -1,14 +1,15 @@
 // ALBUM LOAD & NAVIGATE
-let galleryItemsContainer = document.querySelector('.gallery__items');
+let albumItemsContainer = document.querySelector('.gallery__items');
 let galleryTitle = document.querySelector('.gallery__title');
 
-let photos;
+let album;
 let currentAlbumID = 1;
 let albumStartLoadingOffset = 10;
 let galleryItemsToLoad = 10;
 
 let albumButtonLoadMore = document.querySelector('.button__load-more');
-let galleryNavButtons = document.querySelectorAll('.gallery__nav-button');
+let albumButtonNext = document.querySelector('.button__next');
+let albumButtonPrev = document.querySelector('.button__prev');
 
 document.addEventListener("DOMContentLoaded", function () {
     getPhotosByAlbumID(currentAlbumID);
@@ -18,68 +19,55 @@ document.addEventListener("DOMContentLoaded", function () {
 
 albumButtonLoadMore.addEventListener("click", function (e) {
     e.preventDefault();
-    addAlbumItemToGallery(photos, albumStartLoadingOffset, galleryItemsToLoad);
+    addAlbumItemToGallery(album, albumStartLoadingOffset, galleryItemsToLoad);
     albumStartLoadingOffset *= 2;
 });
 
+albumButtonNext.addEventListener("click", function (e) {
+    e.preventDefault();
 
-galleryNavButtons.forEach(button => {
-    button.addEventListener('click', e => {
-        e.preventDefault();
-        if (e.target.classList.contains('button__next')) {
-            currentAlbumID++
-        } else {
-            currentAlbumID--
-        }
-        getPhotosByAlbumID(currentAlbumID);
-    })
-})
+    currentAlbumID++;
+
+    getPhotosByAlbumID(currentAlbumID);
+});
+
+albumButtonPrev.addEventListener("click", function (e) {
+    e.preventDefault();
+    if ((currentAlbumID - 1) < 1) {
+        return;
+    } else {
+        currentAlbumID--;
+    }
+    getPhotosByAlbumID(currentAlbumID);
+});
 
 
 function getPhotosByAlbumID(ID) {
     fetch('https://jsonplaceholder.typicode.com/photos?albumId=' + ID)
-        .then(response => {
-
-            if (response.ok) {
-                return response.json();
-            } else {
-                throw new Error('С запросом что-то не так');
-            }
-
-        })
+        .then(response => response.json())
         .then(albumJSON => {
-
             if (albumJSON.length > 0) {
-
-                photos = albumJSON;
-                galleryItemsContainer.innerHTML = '';
+                album = albumJSON;
+                albumItemsContainer.innerHTML = '';
                 albumStartLoadingOffset = 10;
 
                 changeGalleryTitleByAlbumID(`Заголовок альбома №${ID}: `, ID);
-                addAlbumItemToGallery(photos, 0, galleryItemsToLoad);
-
-            } else {
-                currentAlbumID = 1;
-                throw new Error('Альбом не найден');
+                addAlbumItemToGallery(album, 0, galleryItemsToLoad);
             }
-
         })
-        .catch((error) => {
-            alert(error);
-        });
 }
 
-function addAlbumItemToGallery(photos, startAtPos, endAtPos) {
+function addAlbumItemToGallery(album, startAtPos, endAtPos) {
 
     for (let i = startAtPos; i < startAtPos + endAtPos; i++) {
-        if (photos[i]) {
+        if (album[i]) {
             let HTMLtemplate = `
         <div class="gallery__item"> 
-            <span>${photos[i].id}</span>
-            <img class="gallery__item-image" data-full-size="${photos[i].url}" src="${photos[i].thumbnailUrl}" >
+            <span>${album[i].id}</span>
+            <img class="gallery__item-image" data-full-size="${album[i].url}" src="${album[i].thumbnailUrl}" >
         </div>
          `;
-            galleryItemsContainer.innerHTML += HTMLtemplate;
+            albumItemsContainer.innerHTML += HTMLtemplate;
         }
     }
 }
@@ -103,10 +91,10 @@ lightbox.addEventListener('click', e => {
     lightbox.classList.remove('active')
 })
 
-galleryItemsContainer.addEventListener('click', e => {
+albumItemsContainer.addEventListener('click', e => {
     if (e.target.classList.contains('gallery__item-image')) {
         lightbox.classList.add('active')
-        let img = document.createElement('img')
+        const img = document.createElement('img')
         img.src = e.target.getAttribute('data-full-size');
         while (lightbox.firstChild) {
             lightbox.removeChild(lightbox.firstChild)
@@ -116,8 +104,21 @@ galleryItemsContainer.addEventListener('click', e => {
 });
 
 document.addEventListener("keydown", function (event) {
-    let key = event.key;
+    const key = event.key;
     if (key === "Escape") {
         lightbox.classList.remove('active');
     }
 });
+
+document.onkeypress = function (e) {
+    e = e || window.event;
+    let isEscape = false;
+    if ("key" in e) {
+        isEscape = (e.key === "Escape" || e.key === "Esc");
+    } else {
+        isEscape = (e.keyCode === 27);
+    }
+    if (isEscape) {
+        lightbox.classList.remove('active');
+    }
+};

@@ -26,17 +26,13 @@ albumButtonLoadMore.addEventListener("click", function (e) {
 galleryNavButtons.forEach(button => {
     button.addEventListener('click', e => {
         e.preventDefault();
-        if (e.target.classList.contains('button__next')) {
-            currentAlbumID++
-        } else {
-            currentAlbumID--
-        }
-        getPhotosByAlbumID(currentAlbumID);
+        getPhotosByAlbumID(currentAlbumID, e.target);
     })
 })
 
 
-function getPhotosByAlbumID(ID) {
+function getPhotosByAlbumID(ID, buttonPressed) {
+    console.log(buttonPressed);
     fetch('https://jsonplaceholder.typicode.com/photos?albumId=' + ID)
         .then(response => {
 
@@ -50,14 +46,12 @@ function getPhotosByAlbumID(ID) {
         .then(albumJSON => {
 
             if (albumJSON.length > 0) {
-
                 photos = albumJSON;
                 galleryItemsContainer.innerHTML = '';
                 albumStartLoadingOffset = 10;
 
                 changeGalleryTitleByAlbumID(`Заголовок альбома №${ID}: `, ID);
                 addAlbumItemToGallery(photos, 0, galleryItemsToLoad);
-
             } else {
                 currentAlbumID = 1;
                 throw new Error('Альбом не найден');

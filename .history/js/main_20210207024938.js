@@ -8,7 +8,8 @@ let albumStartLoadingOffset = 10;
 let galleryItemsToLoad = 10;
 
 let albumButtonLoadMore = document.querySelector('.button__load-more');
-let galleryNavButtons = document.querySelectorAll('.gallery__nav-button');
+let albumButtonNext = document.querySelector('.button__next');
+let albumButtonPrev = document.querySelector('.button__prev');
 
 document.addEventListener("DOMContentLoaded", function () {
     getPhotosByAlbumID(currentAlbumID);
@@ -22,21 +23,15 @@ albumButtonLoadMore.addEventListener("click", function (e) {
     albumStartLoadingOffset *= 2;
 });
 
-
-galleryNavButtons.forEach(button => {
-    button.addEventListener('click', e => {
-        e.preventDefault();
-        if (e.target.classList.contains('button__next')) {
-            currentAlbumID++
-        } else {
-            currentAlbumID--
-        }
-        getPhotosByAlbumID(currentAlbumID);
-    })
-})
+[albumButtonNext, albumButtonPrev].addEventListener("click", function (e) {
+    e.preventDefault();
+    getPhotosByAlbumID(currentAlbumID, e.target);
+});
 
 
-function getPhotosByAlbumID(ID) {
+
+function getPhotosByAlbumID(ID, buttonPressed) {
+    console.log(buttonPressed);
     fetch('https://jsonplaceholder.typicode.com/photos?albumId=' + ID)
         .then(response => {
 
@@ -50,14 +45,12 @@ function getPhotosByAlbumID(ID) {
         .then(albumJSON => {
 
             if (albumJSON.length > 0) {
-
                 photos = albumJSON;
                 galleryItemsContainer.innerHTML = '';
                 albumStartLoadingOffset = 10;
 
                 changeGalleryTitleByAlbumID(`Заголовок альбома №${ID}: `, ID);
                 addAlbumItemToGallery(photos, 0, galleryItemsToLoad);
-
             } else {
                 currentAlbumID = 1;
                 throw new Error('Альбом не найден');

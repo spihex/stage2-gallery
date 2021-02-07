@@ -26,7 +26,7 @@ albumButtonLoadMore.addEventListener("click", function (e) {
 galleryNavButtons.forEach(button => {
     button.addEventListener('click', e => {
         e.preventDefault();
-        if (e.target.classList.contains('button__next')) {
+        if (e.target.getAttribute('data-nav-dir') === 'next') {
             currentAlbumID++
         } else {
             currentAlbumID--

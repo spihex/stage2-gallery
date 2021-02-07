@@ -8,7 +8,8 @@ let albumStartLoadingOffset = 10;
 let galleryItemsToLoad = 10;
 
 let albumButtonLoadMore = document.querySelector('.button__load-more');
-let galleryNavButtons = document.querySelectorAll('.gallery__nav-button');
+let albumButtonNext = document.querySelector('.button__next');
+let albumButtonPrev = document.querySelector('.button__prev');
 
 document.addEventListener("DOMContentLoaded", function () {
     getPhotosByAlbumID(currentAlbumID);
@@ -22,51 +23,44 @@ albumButtonLoadMore.addEventListener("click", function (e) {
     albumStartLoadingOffset *= 2;
 });
 
+albumButtonNext.addEventListener("click", function (e) {
+    e.preventDefault();
 
-galleryNavButtons.forEach(button => {
-    button.addEventListener('click', e => {
-        e.preventDefault();
-        if (e.target.classList.contains('button__next')) {
-            currentAlbumID++
-        } else {
-            currentAlbumID--
-        }
-        getPhotosByAlbumID(currentAlbumID);
-    })
-})
+    currentAlbumID++;
+
+    getPhotosByAlbumID(currentAlbumID);
+});
+
+albumButtonPrev.addEventListener("click", function (e) {
+    e.preventDefault();
+    if ((currentAlbumID - 1) < 1) {
+        return;
+    } else {
+        currentAlbumID--;
+    }
+    getPhotosByAlbumID(currentAlbumID);
+});
 
 
 function getPhotosByAlbumID(ID) {
     fetch('https://jsonplaceholder.typicode.com/photos?albumId=' + ID)
         .then(response => {
-
-            if (response.ok) {
-                return response.json();
-            } else {
-                throw new Error('С запросом что-то не так');
-            }
-
+            a = response.json();
+            console.log(a);
         })
         .then(albumJSON => {
 
-            if (albumJSON.length > 0) {
 
+
+            if (albumJSON.length > 0) {
                 photos = albumJSON;
                 galleryItemsContainer.innerHTML = '';
                 albumStartLoadingOffset = 10;
 
                 changeGalleryTitleByAlbumID(`Заголовок альбома №${ID}: `, ID);
                 addAlbumItemToGallery(photos, 0, galleryItemsToLoad);
-
-            } else {
-                currentAlbumID = 1;
-                throw new Error('Альбом не найден');
             }
-
         })
-        .catch((error) => {
-            alert(error);
-        });
 }
 
 function addAlbumItemToGallery(photos, startAtPos, endAtPos) {
