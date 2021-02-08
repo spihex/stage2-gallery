@@ -4,24 +4,21 @@ let galleryTitle = document.querySelector('.gallery__title');
 
 let photos;
 let currentAlbumID = 1;
-let albumStartLoadingOffset = 10;
+let photosStartLoadingOffset = 10;
 let galleryItemsToLoad = 10;
 
-let albumButtonLoadMore = document.querySelector('.button__load-more');
+let galleryButtonLoadMore = document.querySelector('.button__load-more');
 let galleryNavButtons = document.querySelectorAll('.gallery__nav-button');
 
 document.addEventListener("DOMContentLoaded", function () {
     getPhotosByAlbumID(currentAlbumID);
-
 });
 
-
-albumButtonLoadMore.addEventListener("click", function (e) {
+galleryButtonLoadMore.addEventListener("click", function (e) {
     e.preventDefault();
-    addAlbumItemToGallery(photos, albumStartLoadingOffset, galleryItemsToLoad);
-    albumStartLoadingOffset *= 2;
+    addAlbumItemToGallery(photos, photosStartLoadingOffset, galleryItemsToLoad);
+    photosStartLoadingOffset *= 2;
 });
-
 
 galleryNavButtons.forEach(button => {
     button.addEventListener('click', e => {
@@ -34,7 +31,6 @@ galleryNavButtons.forEach(button => {
         getPhotosByAlbumID(currentAlbumID);
     })
 })
-
 
 function getPhotosByAlbumID(ID) {
     fetch('https://jsonplaceholder.typicode.com/photos?albumId=' + ID)
@@ -53,7 +49,7 @@ function getPhotosByAlbumID(ID) {
 
                 photos = albumJSON;
                 galleryItemsContainer.innerHTML = '';
-                albumStartLoadingOffset = 10;
+                photosStartLoadingOffset = 10;
 
                 changeGalleryTitleByAlbumID(`Заголовок альбома №${ID}: `, ID);
                 addAlbumItemToGallery(photos, 0, galleryItemsToLoad);
@@ -91,8 +87,6 @@ function changeGalleryTitleByAlbumID(str, albumID) {
             galleryTitle.innerHTML = str + album[0].title;
         })
 }
-
-
 
 // ALBUM LIGHTBOX
 let lightbox = document.createElement('div');

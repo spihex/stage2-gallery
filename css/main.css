@@ -111,10 +111,3 @@
      max-width: 80vw;
      max-height: 80vh;
  }
-
- /* SCROLLBAR */
-
- * {
-     scrollbar-width: thin;
-     scrollbar-color: #00AE77 #fff;
- }
