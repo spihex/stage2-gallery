@@ -23,7 +23,6 @@ class Gallery {
 
     }
 
-
     init() {
         this.getPhotosByAlbumID(this.currentAlbumID);
     }
@@ -84,7 +83,6 @@ class Gallery {
     }
 
 
-
     loadMore() {
         this.addAlbumItemToGallery(this.photos, this.photosStartLoadingOffset, this.galleryItemsToLoad);
         this.photosStartLoadingOffset *= 2;
@@ -99,128 +97,4 @@ class Gallery {
         this.getPhotosByAlbumID(++this.currentAlbumID);
     }
 
-
 }
-
-////#region 
-
-// ALBUM LOAD & NAVIGATE
-
-// let galleryItemsContainer = document.querySelector('.gallery__items');
-// let galleryTitle = document.querySelector('.gallery__title');
-
-// let photos;
-// let currentAlbumID = 1;
-// let photosStartLoadingOffset = 10;
-// let galleryItemsToLoad = 10;
-
-// let galleryButtonLoadMore = document.querySelector('.button__load-more');
-// let galleryNavButtons = document.querySelectorAll('.gallery__nav-button');
-
-// document.addEventListener("DOMContentLoaded", function () {
-//     getPhotosByAlbumID(currentAlbumID);
-// });
-
-// galleryButtonLoadMore.addEventListener("click", function (e) {
-//     e.preventDefault();
-//     addAlbumItemToGallery(photos, photosStartLoadingOffset, galleryItemsToLoad);
-//     photosStartLoadingOffset *= 2;
-// });
-
-// galleryNavButtons.forEach(button => {
-//     button.addEventListener('click', e => {
-//         e.preventDefault();
-//         if (e.target.classList.contains('button__next')) {
-//             currentAlbumID++
-//         } else {
-//             currentAlbumID--
-//         }
-//         getPhotosByAlbumID(currentAlbumID);
-//     })
-// })
-
-// function getPhotosByAlbumID(ID) {
-//     fetch('https://jsonplaceholder.typicode.com/photos?albumId=' + ID)
-//         .then(response => {
-
-//             if (response.ok) {
-//                 return response.json();
-//             } else {
-//                 throw new Error('С запросом что-то не так');
-//             }
-
-//         })
-//         .then(albumJSON => {
-
-//             if (albumJSON.length > 0) {
-
-//                 photos = albumJSON;
-//                 galleryItemsContainer.innerHTML = '';
-//                 photosStartLoadingOffset = 10;
-
-//                 changeGalleryTitleByAlbumID(`Заголовок альбома №${ID}: `, ID);
-//                 addAlbumItemToGallery(photos, 0, galleryItemsToLoad);
-
-//             } else {
-//                 currentAlbumID = 1;
-//                 throw new Error('Альбом не найден');
-//             }
-
-//         })
-//         .catch((error) => {
-//             alert(error);
-//         });
-// }
-
-// function addAlbumItemToGallery(photos, startAtPos, endAtPos) {
-
-//     for (let i = startAtPos; i < startAtPos + endAtPos; i++) {
-//         if (photos[i]) {
-//             let HTMLtemplate = `
-//         <div class="gallery__item"> 
-//             <span>${photos[i].id}</span>
-//             <img class="gallery__item-image" data-full-size="${photos[i].url}" src="${photos[i].thumbnailUrl}" >
-//         </div>
-//          `;
-//             galleryItemsContainer.innerHTML += HTMLtemplate;
-//         }
-//     }
-// }
-
-// function changeGalleryTitleByAlbumID(str, albumID) {
-//     fetch('https://jsonplaceholder.typicode.com/albums?id=' + albumID)
-//         .then(response => response.json())
-//         .then(album => {
-//             galleryTitle.innerHTML = str + album[0].title;
-//         })
-// }
-////#endregion
-// ALBUM LIGHTBOX
-
-
-// let lightbox = document.createElement('div');
-// lightbox.classList.add('lightbox');
-
-// document.body.appendChild(lightbox);
-// lightbox.addEventListener('click', e => {
-//     lightbox.classList.remove('active')
-// })
-
-// galleryItemsContainer.addEventListener('click', e => {
-//     if (e.target.classList.contains('gallery__item-image')) {
-//         lightbox.classList.add('active')
-//         let img = document.createElement('img')
-//         img.src = e.target.getAttribute('data-full-size');
-//         while (lightbox.firstChild) {
-//             lightbox.removeChild(lightbox.firstChild)
-//         }
-//         lightbox.appendChild(img)
-//     }
-// });
-
-// document.addEventListener("keydown", function (event) {
-//     let key = event.key;
-//     if (key === "Escape") {
-//         lightbox.classList.remove('active');
-//     }
-// });
