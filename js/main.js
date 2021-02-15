@@ -98,3 +98,39 @@ class Gallery {
     }
 
 }
+
+// ALBUM LIGHTBOX
+
+
+let lightbox = document.createElement('div');
+lightbox.classList.add('lightbox');
+
+document.body.appendChild(lightbox);
+lightbox.addEventListener('click', () => {
+    lightbox.classList.remove('active')
+})
+
+let allGalleriesItems = document.querySelectorAll('.gallery__items');
+
+allGalleriesItems.forEach(item => {
+
+    item.addEventListener('click', e => {
+        if (e.target.classList.contains('gallery__item-image')) {
+            lightbox.classList.add('active')
+            let img = document.createElement('img')
+            img.src = e.target.getAttribute('data-full-size');
+            while (lightbox.firstChild) {
+                lightbox.removeChild(lightbox.firstChild)
+            }
+            lightbox.appendChild(img)
+        }
+    });
+});
+
+
+document.addEventListener("keydown", function(event) {
+    let key = event.key;
+    if (key === "Escape") {
+        lightbox.classList.remove('active');
+    }
+});
